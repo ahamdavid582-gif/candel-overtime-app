@@ -12,7 +12,8 @@
     "electron:dist": "npm run build && electron-builder --win --x64",
     "electron:dev": "electron .",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare-icons": "node ./scripts/download-icon.cjs && node ./scripts/generate-icons.cjs && node ./scripts/generate-electron-icon.cjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.4",
@@ -43,13 +44,11 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "playwright": "^1.57.0",
+    "png-to-ico": "^1.0.0",
     "sharp": "^0.34.5",
-    "png-to-ico": "^1.1.0",
+    "to-ico": "^1.1.5",
     "vite": "^7.2.4",
     "wait-on": "^9.0.3"
-  },
-  "scripts": {
-    "prepare-icons": "node ./scripts/download-icon.js && node ./scripts/generate-icons.js && node ./scripts/generate-electron-icon.js"
   },
   "main": "electron/main.cjs",
   "build": {
