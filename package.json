@@ -44,13 +44,18 @@
     "globals": "^16.5.0",
     "playwright": "^1.57.0",
     "sharp": "^0.34.5",
+    "png-to-ico": "^1.1.0",
     "vite": "^7.2.4",
     "wait-on": "^9.0.3"
+  },
+  "scripts": {
+    "prepare-icons": "node ./scripts/download-icon.js && node ./scripts/generate-icons.js && node ./scripts/generate-electron-icon.js"
   },
   "main": "electron/main.cjs",
   "build": {
     "appId": "com.candel.overtime",
     "productName": "CandelOvertime",
+    "icon": "build/icon.ico",
     "files": [
       "dist/**",
       "electron/**",
