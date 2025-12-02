@@ -1,0 +1,19 @@
+steps:
+  - name: 'node:18'
+    id: 'install-and-build'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        set -e
+        echo "Installing dependencies (npm ci)..."
+        npm ci --no-audit --no-fund
+        echo "Preparing icons..."
+        npm run prepare-icons
+        echo "Building production bundle..."
+        npm run build
+
+timeout: '1200s'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
