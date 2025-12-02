@@ -1,0 +1,6 @@
+{
+  "appId": "com.candel.candel_overtime",
+  "appName": "Candel Overtime",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

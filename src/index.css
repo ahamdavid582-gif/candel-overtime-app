@@ -1,0 +1,522 @@
+﻿/* src/index.css - basic resets and table styling */
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --app-top: 64px; /* height of top nav/header */
+  --sidebar-width: 0px; /* default sidebar width; app can override when open */
+  --muted: #6b7280;
+  --accent: #06b6d4;
+  --border: #e5e7eb;
+}
+
+* { box-sizing: border-box; }
+html,body,#root { height:100%; margin:0; padding:0; }
+body {
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: var(--bg);
+  color: #0f172a;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Prevent accidental horizontal scrolling on small devices */
+body, #root {
+  overflow-x: hidden;
+}
+
+/* App container */
+.app-container {
+  /* Make the app full-bleed so it fills the viewport on all devices */
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Tables / spreadsheet look */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, #fff, #f8fafc);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  z-index: 2;
+}
+
+.table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px dashed var(--border);
+  vertical-align: middle;
+}
+
+/* Sticky first column */
+.table tbody th,
+.table tbody .sticky-col {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  z-index: 3;
+}
+
+/* Row zebra */
+.table tbody tr:nth-child(even) {
+  background: #fbfdff;
+}
+
+/* Hover focus */
+.table tbody tr:hover {
+  background: #eef2f7;
+}
+
+/* Small helpers */
+.btn {
+  background: var(--accent);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+.input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app-container { padding: 8px; }
+  .table thead th, .table tbody td { padding: 8px; }
+}
+/* layout helpers to center app and give breathing room */
+body {
+  background: var(--bg) !important;
+}
+#root {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+.app-container {
+  /* ensure content fills container */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Responsive master-sheet specific overrides to ensure horizontal scrolling only for the master-sheet table */
+.responsive-master-wrapper {
+  /* Keep the wrapper constrained to the visible area so it doesn't create
+     page-level horizontal excess while still allowing the inner table to
+     overflow and show an inner scrollbar. */
+  width: 100% !important;
+  max-width: calc(100vw - var(--sidebar-width, 0px)) !important;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch !important;
+  position: relative !important;
+  padding: 8px !important;
+}
+.responsive-master-inner {
+  display: block !important;
+}
+.responsive-master-table {
+  width: max-content !important;
+  /* allow the table to expand beyond its container so the wrapper can scroll */
+  min-width: unset !important;
+  table-layout: auto !important;
+  background: #fff !important;
+  color: #000 !important;
+  border-collapse: collapse !important;
+}
+
+/* Sticky first columns (No, Name, Role) */
+.responsive-master-table .sticky-col {
+  position: sticky;
+  z-index: 6;
+  background: #fff !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+/* Compact mode: reduce padding */
+/* compact mode removed; use fixed padding for table cells */
+
+/* Overflow indicator shown on the right edge when content overflows horizontally */
+.responsive-master-wrapper {
+  position: relative;
+}
+.overflow-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 48px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease-in-out;
+  z-index: 50;
+  background: linear-gradient(to left, rgba(0,0,0,0.12), rgba(0,0,0,0.03), transparent);
+}
+.overflow-indicator.visible {
+  opacity: 1;
+}
+
+/* The overlay gradient caused a visible grey bar over the table on some
+   scroll positions. Hide it — the horizontal scrollbar is sufficient to
+   indicate overflow and this prevents it from covering columns. */
+.overflow-indicator { display: none !important; }
+
+/* Keep headers and cells on a single line so every column can remain visible
+   and the wrapper shows a horizontal scrollbar. This applies across viewports
+   — the wrapper controls scrolling while the table is allowed to grow. */
+.responsive-master-table th,
+.responsive-master-table td {
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* On small screens, only keep the first sticky column (SN / No) fixed.
+   Remove sticky positioning for the second and third meta columns so
+   the table can be scrolled horizontally and headers remain readable. */
+@media (max-width: 900px) {
+  .responsive-master-wrapper .responsive-master-table thead th.sticky-col:nth-child(n+2),
+  .responsive-master-wrapper .responsive-master-table tbody td.sticky-col:nth-child(n+2) {
+    position: static !important;
+    left: auto !important;
+    z-index: auto !important;
+    background: transparent !important;
+  }
+  /* Ensure the first sticky column remains sticky */
+  .responsive-master-wrapper .responsive-master-table thead th.sticky-col:first-child,
+  .responsive-master-wrapper .responsive-master-table tbody td.sticky-col:first-child {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 8 !important;
+    background: #fff !important;
+  }
+}
+
+/* Ensure the overflow indicator remains available (useful on narrow viewports).
+   We don't hide it on desktop because the table intentionally overflows. */
+
+/* Remove vertical right borders that can create stray lines after columns */
+.responsive-master-table th,
+.responsive-master-table td {
+  border-right: none !important;
+}
+
+/* Ash color for headers, meta columns (SN/Name/Role) and earnings columns */
+.responsive-master-wrapper .responsive-master-table thead th {
+  color: #6b7280 !important; /* ash */
+  background: #f3f4f6 !important; /* ash background for header cells */
+}
+/* Ensure meta and earnings header + data cells use ash color and override other rules */
+.responsive-master-wrapper .responsive-master-table th.meta-col,
+.responsive-master-wrapper .responsive-master-table td.meta-col,
+.responsive-master-wrapper .responsive-master-table th.earnings-col,
+.responsive-master-wrapper .responsive-master-table td.earnings-col {
+  color: #6b7280 !important;
+  background: #f3f4f6 !important;
+}
+
+/* Ensure grid/sheet container doesn't cause horizontal overflow on small screens */
+.master-grid-light { max-width: 100%; box-sizing: border-box; }
+.rdg-master-grid { max-width: 100%; overflow-x: auto; }
+
+/* react-data-grid integration tweaks for MasterGrid */
+.rdg-master-grid {
+  height: 100%;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --rdg-border-color: var(--border);
+}
+.rdg-master-grid .rdg-header-row {
+  background: transparent;
+  border-bottom: 1px solid var(--rdg-border-color);
+}
+.rdg-master-grid .rdg-cell {
+  padding: 6px 8px;
+  border-right: 1px solid var(--rdg-border-color);
+}
+.rdg-master-grid .rdg-cell:focus {
+  outline: 2px solid rgba(6,182,212,0.18);
+}
+.rdg-master-grid .rdg-header-row .rdg-cell button {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+.rdg-master-grid .rdg-row:nth-child(even) { background: #fbfdff; }
+.rdg-master-grid .rdg-row:hover { background: #eef2f7; }
+
+/* make the day header buttons easier to click on mobile */
+.rdg-master-grid .rdg-header-row .rdg-cell button { padding: 6px; }
+
+.rdg-master-grid {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+.rdg-master-grid .rdg-header-row,
+.rdg-master-grid .rdg-header-row .rdg-cell {
+  background: transparent !important;
+  color: #0f172a !important;
+}
+.rdg-master-grid .rdg-cell,
+.rdg-master-grid .rdg-row {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+.rdg-master-grid .rdg-row:nth-child(even) { background: #fbfdff !important; }
+
+/* Make grid borders slightly darker on dark app background for contrast */
+.rdg-master-grid .rdg-cell,
+.rdg-master-grid .rdg-header-row .rdg-cell {
+  border-color: var(--border) !important;
+}
+
+/* master-grid-light wrapper: high-specificity overrides to enforce light theme while
+   allowing per-day header inline backgrounds to show through. Do NOT reset all
+   children's backgrounds here, that would override inline header colors. */
+.master-grid-light { background: #ffffff !important; color: #0f172a !important; }
+.master-grid-light .rdg-master-grid { background: transparent !important; }
+.master-grid-light .rdg-header-row,
+.master-grid-light .rdg-header-row .rdg-cell {
+  background: transparent !important;
+  color: #0f172a !important;
+}
+.master-grid-light .rdg-row {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+.master-grid-light .rdg-row:nth-child(even) { background: #fbfdff !important; }
+.master-grid-light .rdg-cell { color: #0f172a !important; border-right: 1px solid var(--border) !important; }
+
+/* Ensure headerRenderer's inner element can show its own inline background
+   (don't let the cell background forcibly cover it). Also make the header
+   content sit above the row background so colors are visible. */
+.master-grid-light .rdg-header-row .rdg-cell > * {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+/* Make sure header cells do not clip inner backgrounds */
+.master-grid-light .rdg-header-row .rdg-cell {
+  overflow: visible !important;
+}
+
+/* Ensure cells accept pointer events so editors can open */
+.rdg-master-grid .rdg-cell, .master-grid-light .rdg-cell { pointer-events: auto !important; }
+
+/* Fixed master header, with inner offset to avoid being hidden by a left sidebar */
+.master-grid-light .master-header {
+  position: fixed;
+  top: var(--app-top);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: #ffffff;
+  padding: 10px 12px;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.06);
+}
+.master-grid-light .master-header-inner {
+  margin-left: var(--sidebar-width);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.master-grid-light .master-header .btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* header button-specific overrides so the colored header backgrounds (holiday/weekend)
+   coming from the headerRenderer inner element are visible */
+.master-grid-light .rdg-header-row .rdg-cell button {
+  /* allow header button backgrounds to show (we style button inline in headerRenderer) */
+  background: unset !important;
+  color: #0f172a !important;
+}
+
+/* Sticky master header that sits above the sheet and remains visible while scrolling */
+.master-grid-light .master-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: #ffffff;
+  padding: 10px 0;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 6px rgba(2,6,23,0.06);
+}
+.master-grid-light .master-header .btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+}
+
+@media print {
+  /* Hide controls when printing and ensure grid prints cleanly */
+  .master-header .btn { display: none !important; }
+}
+
+/* AG Grid day header colors (light tones for readability) */
+.ag-theme-alpine .saturday-header, .ag-theme-alpine-dark .saturday-header { background: #dbeafe !important; color: #0f172a !important; }
+.ag-theme-alpine .sunday-header, .ag-theme-alpine-dark .sunday-header { background: #bbf7d0 !important; color: #0f172a !important; }
+.ag-theme-alpine .holiday-header, .ag-theme-alpine-dark .holiday-header { background: #fef9c3 !important; color: #0f172a !important; }
+
+/* Make the default alpine theme visually match the app dark background by
+   overriding a few root/background colors. We keep text readable and allow
+   inline header button backgrounds to show through. */
+.ag-theme-alpine {
+  background: transparent !important;
+  color: #e5e7eb !important;
+}
+.ag-theme-alpine .ag-root, .ag-theme-alpine .ag-root-wrapper, .ag-theme-alpine .ag-body-viewport {
+  background: transparent !important;
+}
+.ag-theme-alpine .ag-header, .ag-theme-alpine .ag-header-cell, .ag-theme-alpine .ag-header-cell-label {
+  color: #e5e7eb !important;
+}
+.ag-theme-alpine .ag-cell {
+  background: rgba(255,255,255,0.01) !important;
+  color: #e5e7eb !important;
+  border-right-color: rgba(255,255,255,0.04) !important;
+}
+.ag-theme-alpine .ag-row:nth-child(even) .ag-cell { background: rgba(255,255,255,0.01) !important; }
+
+/* Force minimum grid heights to prevent layout collapse */
+.ag-theme-alpine .ag-root, .ag-theme-alpine .ag-body, .ag-theme-alpine .ag-body-viewport {
+  min-height: 240px !important;
+}
+.ag-theme-alpine .ag-row { min-height: 40px !important; height: 40px !important; }
+.ag-theme-alpine .ag-cell { min-height: 40px !important; }
+
+.ag-theme-alpine .ag-center-cols-container, .ag-theme-alpine .ag-middle-center {
+  display: block !important;
+  visibility: visible !important;
+}
+
+.ag-theme-alpine { position: relative; z-index: 1; }
+.ag-theme-alpine .ag-root-wrapper { z-index: 1; }
+
+/* Ensure header buttons inside our custom header renderer don't inherit heavy borders */
+.ag-theme-alpine .saturday-header button, .ag-theme-alpine .sunday-header button, .ag-theme-alpine .holiday-header button { border: none !important; }
+
+/* Mobile-only: reduce base font-size by 20% to make pages more compact on small screens
+   This adjusts the root font-size so rem-based utilities scale down across the app.
+   Breakpoint: 640px (typical mobile). */
+@media (max-width: 640px) {
+  /* Reduce base font-size on small/mobile screens by an additional 10% (was 80%) */
+  html { font-size: 72%; }
+}
+
+/* Saved item styles for Staff Portal (duller tones, readable text) */
+.saved-approved {
+  background: #0a6024 !important; /* muted green */
+  border: 2px solid #177a3c !important; /* deeper green border */
+  color: #000 !important;
+}
+.saved-pending {
+  background: #9c6b08 !important; /* muted yellow/amber */
+  border: 2px solid #a0731e !important; /* deeper amber border */
+  color: #000 !important;
+}
+.saved-default {
+  background: #0f1724 !important; /* original dark card */
+  border: 1px solid #374151 !important; /* slightly softer gray */
+  color: #fff !important;
+}
+
+/* Ensure text inside saved cards inherits the color we set above */
+.saved-approved .text-black, .saved-pending .text-black { color: #000 !important; }
+.saved-default .text-white { color: #fff !important; }
+
+/* Sliding login background carousel */
+.login-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+.login-bg .slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.05);
+  filter: saturate(0.95) contrast(0.95);
+  animation: slideFade 18s infinite ease-in-out;
+}
+.login-bg .slide:nth-child(1) { animation-delay: 0s; }
+.login-bg .slide:nth-child(2) { animation-delay: 6s; }
+.login-bg .slide:nth-child(3) { animation-delay: 12s; }
+.login-bg .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2,6,23,0.65), rgba(2,6,23,0.6));
+  z-index: 1;
+}
+
+@keyframes slideFade {
+  0% { opacity: 0; transform: scale(1.06); }
+  5% { opacity: 1; transform: scale(1.03); }
+  30% { opacity: 1; transform: scale(1.02); }
+  35% { opacity: 0; transform: scale(1.01); }
+  100% { opacity: 0; transform: scale(1.01); }
+}
+
+/* Ensure login containers put the form above the background */
+.login-foreground { position: relative; z-index: 2; }
+
+/* Powered-by watermark for login/landing pages */
+.powered-by {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  padding: 6px 10px;
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+}
+
+/* Circular avatar / app icon styles for in-app headers and places */
+.app-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  object-fit: cover;
+  display: inline-block;
+}
+.app-avatar-lg { width: 64px; height: 64px; }
+.app-avatar-xl { width: 96px; height: 96px; }
+.app-icon-clickable { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Ensure avatars don't cause layout shifts when loading */
+.avatar-placeholder { background: rgba(255,255,255,0.04); display:inline-block; border-radius:9999px; }

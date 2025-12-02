@@ -1,0 +1,31 @@
+{
+  "name": "Candel Overtime",
+  "short_name": "CandelOT",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#061226",
+  "theme_color": "#00cba9",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon.webp",
+      "sizes": "192x192 512x512",
+      "type": "image/webp"
+    }
+    ,
+    {
+      "src": "https://ikgxslfmmcgneoivupee.supabase.co/storage/v1/object/public/app-assets/ChatGPT%20Image%20Nov%2028,%202025,%2010_23_53%20AM.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}
